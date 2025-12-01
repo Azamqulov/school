@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O'quvchilar Boshqaruv Tizimi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+                border-radius: 12px;
+            }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+        }
+
+        h1 {
+            color: #212529;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 22px;
+                text-align: center;
+            }
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header-actions {
+                width: 100%;
+            }
+
+            .header-actions .btn {
+                flex: 1;
+            }
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+        }
+
+        .search-container {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                min-width: 100%;
+            }
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            padding: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: rgb(58, 103, 58);
+            color: white;
+        }
+
+        .btn-success {
+            background:rgba(0, 0, 255, 0.657);
+            color: white;
+        }
+
+        .btn-danger {
+            background: red;
+            color: white;
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+
+        .btn-warning {
+            background: rgba(255, 255, 0, 0.644);
+            color: white;
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+
+        .btn-secondary {
+            background: rgb(58, 103, 58);
+            color: white;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th,
+        td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        @media (max-width: 768px) {
+
+            th,
+            td {
+                padding: 10px 8px;
+                font-size: 13px;
+            }
+        }
+
+        th {
+
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            animation: fadeIn 0.2s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translate(-50%, -48%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                padding: 20px;
+                width: 95%;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .modal-header h2 {
+            color: #212529;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            font-size: 28px;
+            cursor: pointer;
+            color: #6c757d;
+            transition: color 0.2s;
+            line-height: 1;
+            background: none;
+            border: none;
+        }
+
+        .close-btn:hover {
+            color: #212529;
+        }
+
+        .badge {
+            display: inline-block;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-text {
+            font-size: 18px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .connection-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+        }
+
+        .status-connected {
+            background: #198754;
+            color: white;
+        }
+
+        .status-disconnected {
+            background: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 O'quvchilar Boshqaruv Tizimi</h1>
+            <div class="header-actions">
+                <button id="loginBtn" class="btn btn-primary" onclick="showLoginModal()">
+                    🔐 Admin Login
+                </button>
+                <button id="logoutBtn" class="btn btn-secondary hidden" onclick="logout()">
+                    🚪 Chiqish
+                </button>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Ism, familya, sinf yoki telefon bo'yicha qidiring..."
+                    onkeyup="searchStudents()">
+            </div>
+            <button id="addBtn" class="btn btn-success hidden" onclick="openModal()">
+                ➕ Yangi o'quvchi
+            </button>
+            <button class="btn btn-primary" onclick="exportToExcel()">
+                📥 Excel yuklab olish
+            </button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">№</th>
+                        <th>Ism</th>
+                        <th>Familya</th>
+                        <th>Otasining ismi</th>
+                        <th>Sinf</th>
+                        <th>Telefon</th>
+                        <th id="actionsHeader" class="hidden" style="width: 140px;">Amallar</th>
+                    </tr>
+                </thead>
+                <tbody id="studentsTable">
+                    <tr>
+                        <td colspan="7" class="loading">
+                            <div>⏳ Ma'lumotlar yuklanmoqda...</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Connection Status -->
+    <div id="connectionStatus" class="connection-status hidden">
+        <span id="statusText">🔌 Ulanmoqda...</span>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2>🔐 Admin Login</h2>
+                <button class="close-btn" onclick="closeLoginModal()">&times;</button>
+            </div>
+            <form onsubmit="login(event)">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUsername" placeholder="Username kiriting" required>
+                </div>
+                <div class="form-group">
+                    <label>Parol</label>
+                    <input type="password" id="loginPassword" placeholder="Parol kiriting" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Kirish</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Student Modal -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">➕ O'quvchi qo'shish</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="studentForm">
+                <div class="form-group">
+                    <label>Ism *</label>
+                    <input type="text" id="firstName" placeholder="O'quvchining ismini kiriting" required>
+                </div>
+                <div class="form-group">
+                    <label>Familya *</label>
+                    <input type="text" id="lastName" placeholder="O'quvchining familyasini kiriting" required>
+                </div>
+                <div class="form-group">
+                    <label>Otasining ismi *</label>
+                    <input type="text" id="middleName" placeholder="Otasining ismini kiriting" required>
+                </div>
+                <div class="form-group">
+                    <label>Sinf *</label>
+                    <input type="text" id="grade" placeholder="Masalan: 10-A" required>
+                </div>
+                <div class="form-group">
+                    <label>Telefon *</label>
+                    <input type="tel" id="phone" placeholder="+998 xx xxx xx xx" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">💾 Saqlash</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, push, set, get, remove, update, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        // Firebase konfiguratsiyasi
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5DcClZ6-HE-QM6D1Orf2aAxVkIzDu_wU",
+            authDomain: "school-4e644.firebaseapp.com",
+            databaseURL: "https://school-4e644-default-rtdb.firebaseio.com",
+            projectId: "school-4e644",
+            storageBucket: "school-4e644.firebasestorage.app",
+            messagingSenderId: "582141667432",
+            appId: "1:582141667432:web:53786788cd8d071fffb3dd",
+            measurementId: "G-J9341M3E5W"
+        };
+
+        // Firebase'ni ishga tushirish
+        let app, database;
+        try {
+            app = initializeApp(firebaseConfig);
+            database = getDatabase(app);
+            console.log('✅ Firebase muvaffaqiyatli ulandi');
+        } catch (error) {
+            console.error('❌ Firebase ulanishda xatolik:', error);
+            showToast('Firebase ulanishda xatolik! Iltimos Firebase sozlamalarini tekshiring.', 'error');
+        }
+
+        let students = {};
+        let currentEditId = null;
+        let isAdmin = false;
+
+        // Admin ma'lumotlari - O'ZGARTIRING!
+        const ADMIN_USERNAME = "admin";
+        const ADMIN_PASSWORD = "admin123";
+
+        // Toast xabarnoma
+        window.showToast = function (message, type = 'success') {
+            const bgColors = {
+                'success': 'linear-gradient(to right, #11998e, #38ef7d)',
+                'error': 'linear-gradient(to right, #eb3349, #f45c43)',
+                'info': 'linear-gradient(to right, #667eea, #764ba2)'
+            };
+
+            Toastify({
+                text: message,
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: bgColors[type] || bgColors['info'],
+                stopOnFocus: true,
+                style: {
+                    borderRadius: "8px",
+                    fontWeight: "600",
+                    padding: "12px 24px"
+                }
+            }).showToast();
+        };
+
+        // Login modal
+        window.showLoginModal = function () {
+            document.getElementById('loginModal').style.display = 'block';
+        };
+
+        window.closeLoginModal = function () {
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+        };
+
+        // Login
+        window.login = function (e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                isAdmin = true;
+                localStorage.setItem('isAdmin', 'true');
+                document.getElementById('loginBtn').classList.add('hidden');
+                document.getElementById('logoutBtn').classList.remove('hidden');
+                document.getElementById('addBtn').classList.remove('hidden');
+                document.getElementById('actionsHeader').classList.remove('hidden');
+                showToast('Xush kelibsiz, Admin! 👋', 'success');
+                closeLoginModal();
+                renderTable();
+            } else {
+                showToast('Login yoki parol noto\'g\'ri! ❌', 'error');
+            }
+        };
+
+        // Logout
+        window.logout = function () {
+            if (confirm('Tizimdan chiqmoqchimisiz?')) {
+                isAdmin = false;
+                localStorage.removeItem('isAdmin');
+                document.getElementById('loginBtn').classList.remove('hidden');
+                document.getElementById('logoutBtn').classList.add('hidden');
+                document.getElementById('addBtn').classList.add('hidden');
+                document.getElementById('actionsHeader').classList.add('hidden');
+                showToast('Tizimdan chiqdingiz', 'info');
+                renderTable();
+            }
+        };
+
+        // Ma'lumotlarni yuklash
+        function loadStudents() {
+            if (!database) {
+                console.error('Database ulanmagan');
+                return;
+            }
+
+            const studentsRef = ref(database, 'students');
+
+            onValue(studentsRef, (snapshot) => {
+                students = snapshot.val() || {};
+                console.log('Ma\'lumotlar yuklandi:', Object.keys(students).length, 'ta o\'quvchi');
+                renderTable();
+            }, (error) => {
+                console.error('Ma\'lumotlarni yuklashda xatolik:', error);
+                showToast('Ma\'lumotlarni yuklashda xatolik! ' + error.message, 'error');
+            });
+        }
+
+        // Jadvalni ko'rsatish
+        function renderTable(filteredStudents = null) {
+            const tbody = document.getElementById('studentsTable');
+            const dataToRender = filteredStudents || students;
+
+            if (Object.keys(dataToRender).length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📭</div>
+                                <div class="empty-state-text">Hozircha o'quvchilar yo'q</div>
+                                <div style="color: #adb5bd; font-size: 14px;">Yangi o'quvchi qo'shish uchun admin sifatida kiring</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let html = '';
+            let index = 1;
+
+            for (const [id, student] of Object.entries(dataToRender)) {
+                html += `
+                    <tr>
+                        <td><strong>${index++}</strong></td>
+                        <td>${student.firstName || ''}</td>
+                        <td>${student.lastName || ''}</td>
+                        <td>${student.middleName || ''}</td>
+                        <td><span class="badge">${student.grade || ''}</span></td>
+                        <td>${student.phone || ''}</td>
+                        <td class="${isAdmin ? '' : 'hidden'}">
+                            <div class="actions">
+                                <button class="btn btn-warning" onclick="editStudent('${id}')" title="Tahrirlash">✏️</button>
+                                <button class="btn btn-danger" onclick="deleteStudent('${id}')" title="O'chirish">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+
+            tbody.innerHTML = html;
+        }
+
+        // Modal ochish
+        window.openModal = function (id = null) {
+            currentEditId = id;
+            const modal = document.getElementById('studentModal');
+            const form = document.getElementById('studentForm');
+
+            if (id) {
+                document.getElementById('modalTitle').textContent = '✏️ O\'quvchini tahrirlash';
+                const student = students[id];
+                document.getElementById('firstName').value = student.firstName || '';
+                document.getElementById('lastName').value = student.lastName || '';
+                document.getElementById('middleName').value = student.middleName || '';
+                document.getElementById('grade').value = student.grade || '';
+                document.getElementById('phone').value = student.phone || '';
+            } else {
+                document.getElementById('modalTitle').textContent = '➕ O\'quvchi qo\'shish';
+                form.reset();
+            }
+
+            modal.style.display = 'block';
+        };
+
+        // Modal yopish
+        window.closeModal = function () {
+            document.getElementById('studentModal').style.display = 'none';
+            document.getElementById('studentForm').reset();
+            currentEditId = null;
+        };
+
+        // Form submit
+        document.getElementById('studentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!database) {
+                showToast('Database ulanmagan!', 'error');
+                return;
+            }
+
+            const studentData = {
+                firstName: document.getElementById('firstName').value.trim(),
+                lastName: document.getElementById('lastName').value.trim(),
+                middleName: document.getElementById('middleName').value.trim(),
+                grade: document.getElementById('grade').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                timestamp: Date.now()
+            };
+
+            try {
+                if (currentEditId) {
+                    await update(ref(database, `students/${currentEditId}`), studentData);
+                    showToast('O\'quvchi muvaffaqiyatli yangilandi! ✅', 'success');
+                } else {
+                    await push(ref(database, 'students'), studentData);
+                    showToast('O\'quvchi muvaffaqiyatli qo\'shildi! ✅', 'success');
+                }
+                closeModal();
+            } catch (error) {
+                console.error('Saqlashda xatolik:', error);
+                showToast('Xatolik yuz berdi: ' + error.message, 'error');
+            }
+        });
+
+        // O'chirish
+        window.deleteStudent = async function (id) {
+            if (!database) {
+                showToast('Database ulanmagan!', 'error');
+                return;
+            }
+
+            const student = students[id];
+            if (confirm(`${student.firstName} ${student.lastName}ni rostdan ham o\'chirmoqchimisiz?`)) {
+                try {
+                    await remove(ref(database, `students/${id}`));
+                    showToast('O\'quvchi o\'chirildi! 🗑️', 'success');
+                } catch (error) {
+                    console.error('O\'chirishda xatolik:', error);
+                    showToast('Xatolik yuz berdi: ' + error.message, 'error');
+                }
+            }
+        };
+
+        // Tahrirlash
+        window.editStudent = function (id) {
+            openModal(id);
+        };
+
+        // Qidiruv
+        window.searchStudents = function () {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            if (!searchTerm) {
+                renderTable();
+                return;
+            }
+
+            const filtered = {};
+            for (const [id, student] of Object.entries(students)) {
+                const searchText = `${student.firstName} ${student.lastName} ${student.middleName} ${student.grade} ${student.phone}`.toLowerCase();
+                if (searchText.includes(searchTerm)) {
+                    filtered[id] = student;
+                }
+            }
+
+            renderTable(filtered);
+        };
+
+        // Excel export
+        window.exportToExcel = function () {
+            if (Object.keys(students).length === 0) {
+                showToast('Eksport qilish uchun ma\'lumot yo\'q!', 'error');
+                return;
+            }
+
+            let csv = '\uFEFF№,Ism,Familya,Otasining ismi,Sinf,Telefon\n';
+            let index = 1;
+
+            for (const student of Object.values(students)) {
+                csv += `${index++},"${student.firstName}","${student.lastName}","${student.middleName}","${student.grade}","${student.phone}"\n`;
+            }
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            const date = new Date().toISOString().split('T')[0];
+            link.download = `oquvchilar_${date}.csv`;
+            link.click();
+
+            showToast('Excel fayli yuklandi! 📥', 'success');
+        };
+
+        // Modal tashqarisiga bosganda yopish
+        window.onclick = function (event) {
+            const loginModal = document.getElementById('loginModal');
+            const studentModal = document.getElementById('studentModal');
+
+            if (event.target === loginModal) {
+                closeLoginModal();
+            }
+            if (event.target === studentModal) {
+                closeModal();
+            }
+        };
+
+        // Admin statusini tekshirish
+        if (localStorage.getItem('isAdmin') === 'true') {
+            isAdmin = true;
+            document.getElementById('loginBtn').classList.add('hidden');
+            document.getElementById('logoutBtn').classList.remove('hidden');
+            document.getElementById('addBtn').classList.remove('hidden');
+            document.getElementById('actionsHeader').classList.remove('hidden');
+        }
+
+        // Boshlang'ich yuklash
+        loadStudents();
+    </script>
+</body>
+
+</html>
